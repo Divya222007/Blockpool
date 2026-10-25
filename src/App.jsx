@@ -8,6 +8,8 @@ function App() {
   const [activePage, setActivePage] = useState("Dashboard");
   const [products, setProducts] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [pooling, setPooling] = useState({
     product_groups: [],
     total_savings: 0,
@@ -136,8 +138,8 @@ function App() {
       }
 
       setQuantities({});
+      setShowCheckout(false);
       await refreshData();
-
       setMessage(
         submitted === selected.length
           ? "Shopping order submitted successfully!"
@@ -495,7 +497,29 @@ function App() {
                   Select one product or several different products.
                 </p>
 
-                <form className="request-form" onSubmit={submitOrders}>
+               <form
+  onSubmit={(event) => {
+    event.preventDefault();
+    setMessage("");
+
+    if (!resident.trim()) {
+      setMessage("Please enter your resident name.");
+      return;
+    }
+
+    const selected = products.filter(
+      (product) => Number(quantities[product.id]) > 0
+    );
+
+    if (selected.length === 0) {
+      setMessage("Choose at least one product and quantity.");
+      return;
+    }
+
+    alert("Checkout button handler reached!");
+    setShowCheckout(true);
+  }}
+>
                   <label htmlFor="resident">Resident name</label>
                   <input
                     id="resident"
@@ -974,6 +998,78 @@ function App() {
             )}
           </>
         )}
+
+     {showCheckout && (
+  <section className="panel">
+    <h2>BlockPool Demo Checkout</h2>
+    <p>Review your order before confirming.</p>
+
+    {products
+      .filter((product) => Number(quantities[product.id]) > 0)
+      .map((product) => (
+        <div className="cost-row" key={product.id}>
+          <span>
+            {product.name} × {Number(quantities[product.id])}
+          </span>
+          <strong>
+            ₹
+            {(
+              Number(product.base_price || 0) *
+              Number(quantities[product.id])
+            ).toFixed(2)}
+          </strong>
+        </div>
+      ))}
+
+    <h3>
+      Estimated subtotal: ₹
+      {products
+        .filter((product) => Number(quantities[product.id]) > 0)
+        .reduce(
+          (total, product) =>
+            total +
+            Number(product.base_price || 0) *
+              Number(quantities[product.id]),
+          0
+        )
+        .toFixed(2)}
+    </h3>
+
+    <p>Demo checkout only. No real payment will be taken.</p>
+
+    <label htmlFor="demo-payment-method">
+      Payment method
+    </label>
+
+    <select
+      id="demo-payment-method"
+      value={paymentMethod}
+      onChange={(event) => setPaymentMethod(event.target.value)}
+    >
+      <option value="UPI">UPI (Demo)</option>
+      <option value="Card">Card (Demo)</option>
+      <option value="Pay on Delivery">Pay on Delivery (Demo)</option>
+    </select>
+
+    <div className="button-row">
+      <button
+        type="button"
+        className="secondary-button"
+        onClick={() => setShowCheckout(false)}
+      >
+        Back
+      </button>
+
+      <button
+        type="button"
+        disabled={submitting}
+        onClick={() => submitOrders({ preventDefault: () => {} })}
+      >
+        {submitting ? "Processing..." : "Confirm Demo Order"}
+      </button>
+    </div>
+  </section>
+)}
 
         <footer>
           BlockPool · HackDays Prototype · Demo offers are not live supplier

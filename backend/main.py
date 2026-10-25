@@ -22,20 +22,25 @@ from database import (
 )
 
 app = FastAPI(title="BlockPool API")
+
 security = HTTPBearer(auto_error=False)
+
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5175",
+        "http://127.0.0.1:5175",
+        "http://localhost:5176",
+        "http://127.0.0.1:5176",
     ],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-initialize_database()
 
 # Sessions are stored as hashes, not raw bearer tokens.
 with get_connection() as connection:
@@ -65,6 +70,7 @@ def verify_password(password, stored):
         actual = hashlib.pbkdf2_hmac(
             "sha256", password.encode(), bytes.fromhex(salt_hex), 310000
         )
+      
         return hmac.compare_digest(actual.hex(), digest_hex)
     except (ValueError, TypeError):
         return False
