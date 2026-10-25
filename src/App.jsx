@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 
-const API = "http://127.0.0.1:8000";
+ const API = "https://blockpool-api.onrender.com";
 
 function App() {
   const [activePage, setActivePage] = useState("Dashboard");
@@ -40,55 +40,69 @@ function App() {
   });
 
   // Load catalogue, shopping requests, pooling calculations and available pools.
+ 
+  // Load catalogue, shopping requests, pooling calculations and available pools.
   const refreshData = useCallback(async () => {
     try {
-      const [
-        catalogResponse,
-        requestsResponse,
-        poolingResponse,
-        poolsResponse,
-      ] = await Promise.all([
-        fetch(`${API}/api/catalog`),
-        fetch(`${API}/api/requests`),
-        fetch(`${API}/api/pooling`),
-        fetch(`${API}/api/pools`),
-      ]);
+      const catalogResponse = await fetch(`${API}/api/catalog`);
 
-      if (
-        !catalogResponse.ok ||
-        !requestsResponse.ok ||
-        !poolingResponse.ok ||
-        !poolsResponse.ok
-      ) {
-        throw new Error("The BlockPool API returned an error.");
+      if (!catalogResponse.ok) {
+        throw new Error("Could not load product catalogue.");
       }
 
       const catalogData = await catalogResponse.json();
-      const requestsData = await requestsResponse.json();
-      const poolingData = await poolingResponse.json();
-      const poolsData = await poolsResponse.json();
-
       setProducts(Array.isArray(catalogData) ? catalogData : []);
-      setRequests(Array.isArray(requestsData) ? requestsData : []);
-      setPooling(poolingData || { product_groups: [], total_savings: 0 });
 
-      setPools(
-        Array.isArray(poolsData)
-          ? poolsData
-          : Array.isArray(poolsData.pools)
-            ? poolsData.pools
-            : []
-      );
+      const [requestsResult, poolingResult, poolsResult] =
+        await Promise.allSettled([
+          fetch(`${API}/api/requests`).then((r) => {
+            if (!r.ok) throw new Error("Requests API failed");
+            return r.json();
+          }),
+          fetch(`${API}/api/pooling`).then((r) => {
+            if (!r.ok) throw new Error("Pooling API failed");
+            return r.json();
+          }),
+          fetch(`${API}/api/pools`).then((r) => {
+            if (!r.ok) throw new Error("Pools API failed");
+            return r.json();
+          }),
+        ]);
+
+      if (requestsResult.status === "fulfilled") {
+        setRequests(
+          Array.isArray(requestsResult.value) ? requestsResult.value : []
+        );
+      }
+
+      if (poolingResult.status === "fulfilled") {
+        setPooling(
+          poolingResult.value || { product_groups: [], total_savings: 0 }
+        );
+      }
+
+      if (poolsResult.status === "fulfilled") {
+        const data = poolsResult.value;
+        setPools(
+          Array.isArray(data)
+            ? data
+            : Array.isArray(data.pools)
+              ? data.pools
+              : []
+        );
+      }
 
       setMessage("");
     } catch (error) {
+      console.error("BlockPool catalogue error:", error);
       setMessage(
-        "Cannot load BlockPool data. Check that the FastAPI backend is running on port 8000 and that the API endpoints are available."
+        "Cannot load products. Please check your internet connection and try again."
       );
     } finally {
       setLoading(false);
     }
   }, []);
+
 
   useEffect(() => {
     refreshData();
