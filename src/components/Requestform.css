@@ -1,0 +1,253 @@
+
+.bp-catalogue {
+  width: min(1180px, 94%);
+  margin: 40px auto;
+  color: #17372a;
+  font-family: inherit;
+}
+
+.bp-heading {
+  margin-bottom: 28px;
+}
+
+.bp-eyebrow {
+  color: #009b63;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.bp-heading h2 {
+  margin: 10px 0;
+  color: #123c2c;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.2;
+}
+
+.bp-heading p {
+  max-width: 650px;
+  color: #63756a;
+  line-height: 1.7;
+}
+
+.bp-resident {
+  max-width: 440px;
+  margin-bottom: 28px;
+}
+
+.bp-resident label,
+.bp-quantity-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #244534;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.bp-resident input,
+.bp-quantity-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d5e2d9;
+  border-radius: 9px;
+  background: #fff;
+  color: #17372a;
+  font: inherit;
+}
+
+.bp-resident input:focus,
+.bp-quantity-input:focus {
+  outline: 2px solid #00b879;
+  outline-offset: 2px;
+}
+
+.bp-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  align-items: stretch;
+  gap: 24px;
+}
+
+.bp-product-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #dfe9e2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgb(15 50 32 / 7%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.bp-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgb(15 50 32 / 12%);
+}
+
+.bp-image-box {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 210px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f4f8f5;
+}
+
+.bp-product-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  object-fit: contain;
+}
+
+.bp-image-fallback {
+  display: none;
+  color: #537463;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.bp-image-box.bp-image-failed .bp-image-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.bp-product-content {
+  padding: 18px;
+}
+
+.bp-category {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  background: #e5f7ec;
+  color: #167448;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bp-product-content h3 {
+  margin: 12px 0 6px;
+  color: #153d2c;
+  font-size: 22px;
+}
+
+.bp-description {
+  margin: 0;
+  color: #718077;
+  font-size: 14px;
+}
+
+.bp-base-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 18px 0;
+  color: #536359;
+  font-size: 14px;
+}
+
+.bp-base-price strong {
+  color: #153d2c;
+  font-size: 18px;
+}
+
+.bp-bulk-box {
+  margin: 16px 0;
+  padding: 13px;
+  border: 1px solid #ccebd8;
+  border-radius: 10px;
+  background: #f3fbf5;
+}
+
+.bp-bulk-box h4 {
+  margin: 0 0 10px;
+  color: #167448;
+  font-size: 14px;
+}
+
+.bp-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid #e0eee4;
+  color: #536359;
+  font-size: 13px;
+}
+
+.bp-price-row strong {
+  color: #12663f;
+  text-align: right;
+}
+
+.bp-quantity-input {
+  margin-bottom: 6px;
+}
+
+.bp-submit-button {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 15px 20px;
+  border: 0;
+  border-radius: 10px;
+  background: #00a96b;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.bp-submit-button:hover {
+  background: #008b58;
+}
+
+.bp-submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.bp-status {
+  margin: 18px 0;
+  padding: 13px 16px;
+  border-radius: 9px;
+  background: #eaf7ef;
+  color: #17663f;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.bp-disclaimer {
+  margin-top: 18px;
+  color: #718077;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .bp-catalogue {
+    width: 92%;
+    margin: 24px auto;
+  }
+
+  .bp-product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bp-image-box {
+    height: 220px;
+  }
+}
